@@ -10,4 +10,9 @@ export class UserEntity implements User {
 	 * The user's email address.
 	 */
 	email: string;
+
+	/**
+	 * The user's google account unique identifier.
+	 */
+	googleId: string;
 }

@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { SwaggerTheme, SwaggerThemeNameEnum } from "swagger-themes";
 
 import { AppModule } from "./app.module";
+import { PrismaClientExceptionFilter } from "./prisma-client-exception/prisma-client-exception.filter";
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -33,6 +34,8 @@ async function bootstrap() {
 		customCss: theme.getBuffer(SwaggerThemeNameEnum.DARK),
 		customSiteTitle: "Chronos server API Docs",
 	});
+
+	app.useGlobalFilters(new PrismaClientExceptionFilter());
 
 	await app.listen(process.env.PORT ?? 8393);
 }

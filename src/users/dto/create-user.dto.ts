@@ -1,4 +1,4 @@
-import { IsEmail } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateUserDto {
 	/**
@@ -6,4 +6,11 @@ export class CreateUserDto {
 	 */
 	@IsEmail()
 	email: string;
+
+	/**
+	 * The user's google account unique identifier.
+	 */
+	@IsString()
+	@IsNotEmpty()
+	googleId: string;
 }

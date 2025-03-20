@@ -13,12 +13,12 @@ export class UsersService {
 		return this.prisma.user.create({ data: createUserDto });
 	}
 
-	async findAll() {
-		return this.prisma.user.findMany();
-	}
-
 	async findOne(id: string) {
 		return this.prisma.user.findUnique({ where: { id } });
+	}
+
+	async findOneByGoogleId(googleId: string) {
+		return this.prisma.user.findUnique({ where: { googleId } });
 	}
 
 	async update(id: string, updateUserDto: UpdateUserDto) {

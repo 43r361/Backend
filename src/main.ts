@@ -20,7 +20,7 @@ async function bootstrap() {
 	);
 
 	const config = new DocumentBuilder()
-		.setTitle("43r361 API")
+		.setTitle("Chronos server API")
 		.setVersion("1.0.0")
 		.addServer("http://localhost:8393")
 		.build();
@@ -31,7 +31,7 @@ async function bootstrap() {
 
 	SwaggerModule.setup("api", app, document, {
 		customCss: theme.getBuffer(SwaggerThemeNameEnum.DARK),
-		customSiteTitle: "43r361 API Docs",
+		customSiteTitle: "Chronos server API Docs",
 	});
 
 	await app.listen(process.env.PORT ?? 8393);

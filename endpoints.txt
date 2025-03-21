@@ -1,5 +1,0 @@
-https://www.googleapis.com/calendar/v3/users/me/calendarList
-
-https://www.googleapis.com/calendar/v3/calendars/:calendarId
-
-https://www.googleapis.com/calendar/v3/calendars/:calendarId/events

@@ -1,4 +1,5 @@
 import { User } from "@prisma/client";
+import { Exclude } from "class-transformer";
 
 export class UserEntity implements User {
 	/**
@@ -19,10 +20,12 @@ export class UserEntity implements User {
 	/**
 	 * The user's access token. (encrypted)
 	 */
+	@Exclude()
 	accessToken: string;
 
 	/**
 	 * The initialization vector used to encrypt the access token.
 	 */
+	@Exclude()
 	ivHex: string;
 }

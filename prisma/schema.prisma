@@ -29,7 +29,9 @@ model User {
 }
 
 model Calendar {
-    id       String  @id @default(uuid()) @db.Uuid
+    id       String @id @default(uuid()) @db.Uuid
+    googleId String @unique
+
     summary  String
     location String
     timeZone String
@@ -37,7 +39,8 @@ model Calendar {
 }
 
 model Event {
-    id String @id @default(uuid()) @db.Uuid
+    id       String @id @default(uuid()) @db.Uuid
+    googleId String
 
     status      EventStatus @default(confirmed)
     // link to google calendar event
@@ -61,10 +64,13 @@ model Event {
     // if it isn't the default there is a list of extra reminders
     remindersUseDefault Boolean
     overrides           Reminder[]
+
+    // google id must be unqiue per calendar
+    @@unique([googleId, calendarId])
 }
 
 model Reminder {
-    id      Int            @id @default(autoincrement())
+    id      String         @id @default(uuid()) @db.Uuid
     method  ReminderMethod
     minutes Int
 

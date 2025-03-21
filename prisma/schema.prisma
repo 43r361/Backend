@@ -12,3 +12,49 @@ model User {
     email    String @unique
     googleId String @unique
 }
+
+model Calendar {
+    id       String  @id @default(uuid()) @db.Uuid
+    summary  String
+    location String
+    timeZone String
+    events   Event[]
+}
+
+model Event {
+    id                  String     @id @default(uuid()) @db.Uuid
+    status              String
+    htmlLink            String     @unique // link to google calendar event
+    summary             String
+    description         String
+    location            String
+    creatorId           String?    @db.Uuid
+    creator             Creator?   @relation(fields: [creatorId], references: [id])
+    startDate           DateTime
+    startDateTime       DateTime?
+    startTimeZone       String
+    endDate             DateTime
+    endDateTime         DateTime?
+    endTimeZone         String
+    endTimeUnspecified  Boolean
+    calendarId          String     @db.Uuid
+    calendar            Calendar   @relation(fields: [calendarId], references: [id])
+    remindersUseDefault Boolean
+    overrides           Reminder[] // if it isn't the default there is a list of extra reminders
+}
+
+model Creator {
+    id          String  @id @default(uuid()) @db.Uuid
+    email       String  @unique
+    displayName String
+    self        Boolean
+    events      Event[]
+}
+
+model Reminder {
+    id      Int    @id @default(autoincrement())
+    method  String
+    minutes Int
+    eventId String @db.Uuid
+    event   Event  @relation(fields: [eventId], references: [id])
+}

@@ -13,4 +13,18 @@ export class CreateUserDto {
 	@IsString()
 	@IsNotEmpty()
 	googleId: string;
+
+	/**
+	 * The user's access token. (encrypted)
+	 */
+	@IsString()
+	@IsNotEmpty()
+	accessToken: string;
+
+	/**
+	 * The initialization vector used to encrypt the access token.
+	 */
+	@IsString()
+	@IsNotEmpty()
+	ivHex: string;
 }

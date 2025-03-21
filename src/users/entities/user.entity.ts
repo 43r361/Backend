@@ -15,4 +15,14 @@ export class UserEntity implements User {
 	 * The user's google account unique identifier.
 	 */
 	googleId: string;
+
+	/**
+	 * The user's access token. (encrypted)
+	 */
+	accessToken: string;
+
+	/**
+	 * The initialization vector used to encrypt the access token.
+	 */
+	ivHex: string;
 }

@@ -70,6 +70,16 @@ export class CalendarsService {
 				continue;
 			}
 
+			const resCalendar = await this.prisma.calendar.findUnique({
+				where: {
+					googleId: calendar.id,
+				},
+			});
+
+			// probably better to check for new events
+			if (resCalendar == null) {
+				continue;
+			}
 			// Create the calendar entry
 			await this.prisma.calendar.create({
 				data: {
@@ -94,28 +104,40 @@ export class CalendarsService {
 			accessToken
 		);
 
-		return eventsResponse.map(event => ({
-			googleId: event.id,
-			status: event.status,
-			htmlLink: event.htmlLink,
-			summary: event.summary,
-			description: event.description || "",
-			location: event.location || "",
-			startDateTime: event.start.dateTime
-				? new Date(event.start.dateTime)
-				: event.start.date
-					? new Date(event.start.date)
-					: // this case is impossible, but TypeScript doesn't know that
-						new Date(),
-			startTimeZone: event.start.timeZone || null,
-			endDateTime: event.end.dateTime
-				? new Date(event.end.dateTime)
-				: event.end.date
-					? new Date(event.end.date)
-					: null,
-			endTimeZone: event.end.timeZone || null,
-			endTimeUnspecified: event.endTimeUnspecified,
-			remindersUseDefault: event.reminders.useDefault,
-		}));
+		return eventsResponse
+			.filter(async event => {
+				const res = await this.prisma.event.findUnique({
+					where: {
+						googleId_calendarId: {
+							calendarId: calendarId,
+							googleId: event.id,
+						},
+					},
+				});
+				return res == null;
+			})
+			.map(event => ({
+				googleId: event.id,
+				status: event.status,
+				htmlLink: event.htmlLink,
+				summary: event.summary,
+				description: event.description || "",
+				location: event.location || "",
+				startDateTime: event.start.dateTime
+					? new Date(event.start.dateTime)
+					: event.start.date
+						? new Date(event.start.date)
+						: // this case is impossible, but TypeScript doesn't know that
+							new Date(),
+				startTimeZone: event.start.timeZone || null,
+				endDateTime: event.end.dateTime
+					? new Date(event.end.dateTime)
+					: event.end.date
+						? new Date(event.end.date)
+						: null,
+				endTimeZone: event.end.timeZone || null,
+				endTimeUnspecified: event.endTimeUnspecified,
+				remindersUseDefault: event.reminders.useDefault,
+			}));
 	}
 }

@@ -19,7 +19,11 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
 			callbackURL: configService.getOrThrow<string>(
 				"GOOGLE_CALLBACK_URL"
 			),
-			scope: ["email", "profile"],
+			scope: [
+				"email",
+				"profile",
+				"https://www.googleapis.com/auth/calendar",
+			],
 		});
 	}
 
@@ -31,6 +35,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
 	) {
 		const googleId = profile.id;
 		const email = profile.emails?.[0].value;
+
+		console.log({ accessToken, refreshToken });
 
 		if (!email) {
 			return done(new Error("Email not found in Google profile"));

@@ -7,6 +7,17 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum EventStatus {
+    confirmed
+    tentative
+    cancelled
+}
+
+enum ReminderMethod {
+    email
+    popup
+}
+
 model User {
     id       String @id @default(uuid()) @db.Uuid
     email    String @unique
@@ -22,39 +33,37 @@ model Calendar {
 }
 
 model Event {
-    id                  String     @id @default(uuid()) @db.Uuid
-    status              String
-    htmlLink            String     @unique // link to google calendar event
-    summary             String
-    description         String
-    location            String
-    creatorId           String?    @db.Uuid
-    creator             Creator?   @relation(fields: [creatorId], references: [id])
-    startDate           DateTime
-    startDateTime       DateTime?
-    startTimeZone       String
-    endDate             DateTime
-    endDateTime         DateTime?
-    endTimeZone         String
-    endTimeUnspecified  Boolean
-    calendarId          String     @db.Uuid
-    calendar            Calendar   @relation(fields: [calendarId], references: [id])
-    remindersUseDefault Boolean
-    overrides           Reminder[] // if it isn't the default there is a list of extra reminders
-}
+    id String @id @default(uuid()) @db.Uuid
 
-model Creator {
-    id          String  @id @default(uuid()) @db.Uuid
-    email       String  @unique
-    displayName String
-    self        Boolean
-    events      Event[]
+    status      EventStatus @default(confirmed)
+    // link to google calendar event
+    htmlLink    String      @unique
+    // title of the event
+    summary     String
+    description String
+    // location of the event (as an address for example)
+    location    String
+
+    startDateTime DateTime
+    startTimeZone String?
+
+    endDateTime        DateTime?
+    endTimeZone        String?
+    endTimeUnspecified Boolean   @default(false)
+
+    calendarId String   @db.Uuid
+    calendar   Calendar @relation(fields: [calendarId], references: [id])
+
+    // if it isn't the default there is a list of extra reminders
+    remindersUseDefault Boolean
+    overrides           Reminder[]
 }
 
 model Reminder {
-    id      Int    @id @default(autoincrement())
-    method  String
+    id      Int            @id @default(autoincrement())
+    method  ReminderMethod
     minutes Int
+
     eventId String @db.Uuid
     event   Event  @relation(fields: [eventId], references: [id])
 }

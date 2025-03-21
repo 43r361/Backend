@@ -6,7 +6,6 @@ import { Profile, Strategy, VerifyCallback } from "passport-google-oauth20";
 import { UsersService } from "src/users/users.service";
 
 import { EncryptionService } from "./encryption.service";
-
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
 	constructor(
@@ -63,6 +62,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
 			accessToken: encrypted,
 			ivHex,
 		});
+
+		// getUserCalendars(accessToken);
 
 		return done(null, existingUser);
 	}

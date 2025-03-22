@@ -6,10 +6,10 @@ import { EventModel } from "../calendars/dto/models/event.model";
 export class EventController {
 	constructor(private readonly eventService: EventService) {}
 
-	// @Get(":id")
-	// async getEvent(@Param("id") id: string): Promise<EventModel> {
-	// 	return this.eventService.getEventById(id);
-	// }
+	@Get("")
+	async getEvent(@Param("id") id: string): Promise<EventModel[]> {
+		return this.eventService.getAllEvent();
+	}
 	@Get("user/:userId")
 	async getEventsForUser(
 		@Param("userId") userId: string

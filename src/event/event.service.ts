@@ -6,6 +6,40 @@ import { EventModel } from "../calendars/dto/models/event.model"; // Import your
 export class EventService {
 	constructor(private readonly prisma: PrismaService) {}
 
+	async getAllEvent(): Promise<EventModel[]> {
+		// Fetch all events from the database
+		const events = await this.prisma.event.findMany();
+
+		if (!events || events.length === 0) {
+			throw new NotFoundException(`No events found`);
+		}
+
+		// Format the events to match the EventModel
+		return events.map(event => {
+			const start = this.formatDate(
+				event.startDateTime,
+				event.startTimeZone || "UTC"
+			);
+			const end = event.endDateTime
+				? this.formatDate(event.endDateTime, event.endTimeZone || "UTC")
+				: { date: undefined, dateTime: undefined, timeZone: undefined };
+
+			return {
+				id: event.id,
+				status: event.status,
+				htmlLink: event.htmlLink,
+				summary: event.summary,
+				description: event.description,
+				location: event.location,
+				start: start,
+				end: end,
+				endTimeUnspecified: event.endTimeUnspecified,
+				reminders: {
+					useDefault: event.remindersUseDefault,
+				},
+			};
+		});
+	}
 	async getEventsForUser(userId: string): Promise<EventModel[]> {
 		// Fetch the user's calendar using the googleId (you'll need to modify if you are using userId directly)
 		const user = await this.prisma.user.findUnique({

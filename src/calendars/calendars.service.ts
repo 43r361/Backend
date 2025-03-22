@@ -77,7 +77,7 @@ export class CalendarsService {
 			});
 
 			// probably better to check for new events
-			if (resCalendar == null) {
+			if (resCalendar !== null) {
 				continue;
 			}
 			// Create the calendar entry
@@ -103,6 +103,8 @@ export class CalendarsService {
 			calendarId,
 			accessToken
 		);
+
+		console.log("Adding events!!");
 
 		return eventsResponse
 			.filter(async event => {
